@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Created-By: TeamDev Ltd.
+Main-Class: com.teamdev.jxbrowser.chromium.demo.JxBrowserDemo
+Class-Path: ../lib/jxbrowser-6.7.1.jar ../lib/jxbrowser-mac-6.7.1.jar 
+ ../lib/jxbrowser-win-6.7.1.jar ../lib/jxbrowser-linux32-6.7.1.jar ../
+ lib/jxbrowser-linux64-6.7.1.jar
+Implementation-Vendor: TeamDev Ltd.
+Implementation-Title: JxBrowser Demo
+Implementation-Version: 6.7.1
+Permissions: all-permissions
+Application-Name: JxBrowser Demo
+Codebase: *
+

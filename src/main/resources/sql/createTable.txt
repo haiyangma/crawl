@@ -1,0 +1,30 @@
+CREATE TABLE `financial`.`stock_id_name` (
+  `symbol` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`symbol`),
+  UNIQUE INDEX `symbol_UNIQUE` (`symbol` ASC))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE `financial`.`stock_day` (
+  `symbol` VARCHAR(20) NOT NULL COMMENT '\'股票号\'',
+  `name` VARCHAR(45) NOT NULL COMMENT '\'股票名称\'',
+  `volume` INT NULL COMMENT '成交量',
+  `open` DOUBLE NULL COMMENT '开盘价',
+  `high` DOUBLE NULL COMMENT '最高价',
+  `close` DOUBLE NULL COMMENT '收盘价',
+  `low` DOUBLE NULL COMMENT '最低价',
+  `chg` DOUBLE NULL COMMENT '涨跌额',
+  `percent` DOUBLE NULL COMMENT '涨跌百分比',
+  `turnrate` DOUBLE NULL COMMENT '换手率\n',
+  `ma5` DOUBLE NULL COMMENT '5日均价',
+  `ma10` DOUBLE NULL COMMENT '5日均价',
+  `ma30` DOUBLE NULL,
+  `dif` DOUBLE NULL,
+  `dea` DOUBLE NULL,
+  `macd` DOUBLE NULL,
+  `time` DATE NULL,
+  PRIMARY KEY (`symbol`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = '股票天数据';

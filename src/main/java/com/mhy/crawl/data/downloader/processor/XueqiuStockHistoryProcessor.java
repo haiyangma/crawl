@@ -3,8 +3,7 @@ package com.mhy.crawl.data.downloader.processor;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mhy.crawl.data.downloader.http.CookieRepo;
-import com.mhy.crawl.data.model.HitoStock;
-import com.mhy.crawl.data.model.Stock;
+import com.mhy.crawl.data.model.StockSimple;
 import com.mhy.crawl.util.CookieProcessor;
 import org.apache.commons.lang3.tuple.Pair;
 import us.codecraft.webmagic.Page;
@@ -14,11 +13,7 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.downloader.HttpClientDownloader;
 import us.codecraft.webmagic.utils.HttpConstant;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,12 +21,12 @@ import java.util.regex.Pattern;
 /**
  * Created by mhy on 2017/4/14.
  */
-public class XueqiuStockHistoryProcessor extends JsonDataProcessor<HitoStock> {
+public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> {
 
     private Site site = new Site().setRetryTimes(1).setDomain("xueqiu.com").setSleepTime(200);
 
 
-    public XueqiuStockHistoryProcessor(Class<HitoStock> claz) {
+    public XueqiuStockHistoryProcessor(Class<StockSimple> claz) {
         super(claz);
     }
 
@@ -92,31 +87,31 @@ public class XueqiuStockHistoryProcessor extends JsonDataProcessor<HitoStock> {
 //        }
 //    }
 
-    public List<HitoStock> transToObj(JSONObject json) {
-        List<HitoStock> toReturn = null;
+    public List<StockSimple> transToObj(JSONObject json) {
+        List<StockSimple> toReturn = null;
         if(json.containsKey("chartlist")){
             JSONArray arr = json.getJSONArray("chartlist");
             if(arr.size()>0){
                 for(Object jobj : arr){
-                    HitoStock hitoStock = JSONObject.toJavaObject((JSONObject)jobj,HitoStock.class);
+                    StockSimple stockSimple = JSONObject.toJavaObject((JSONObject)jobj,StockSimple.class);
                     if(toReturn==null){
-                        toReturn = new ArrayList<HitoStock>();
+                        toReturn = new ArrayList<StockSimple>();
                     }
-                    toReturn.add(hitoStock);
+                    toReturn.add(stockSimple);
                 }
             }
         }
         return toReturn;
     }
 
-    public void doWithObj(HitoStock stock) {
+    public void doWithObj(StockSimple stock) {
 //        System.out.println(stock);
         LOGGER.info(" ",stock,2);
     }
 
     public static void main(String[] args) {
         CookieProcessor.updateCookie(new Request("http://xueqiu.com"));
-        Spider spider = Spider.create(new XueqiuStockHistoryProcessor(HitoStock.class));
+        Spider spider = Spider.create(new XueqiuStockHistoryProcessor(StockSimple.class));
         HttpClientDownloader downloader = new HttpClientDownloader();
         downloader.setThread(1);
         getAllStockNumberAndName(downloader);

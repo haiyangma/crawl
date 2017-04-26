@@ -10,7 +10,7 @@ import java.util.Date;
 public class Stock {
 
     private static final String Stock_Page_PreFix = "http://xueqiu.com/S/";
-
+    private Integer id;
     private String name; //股票名称
     private String symbol; //股票代码
     private String exchange; //前缀
@@ -49,6 +49,13 @@ public class Stock {
     private String turnover_rate ;//换手
     private String amount ;//成交额
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     private Date stockQueryDate = new Date(0);
 

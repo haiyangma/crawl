@@ -1,12 +1,13 @@
 CREATE TABLE `financial`.`stock_id_name` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `symbol` VARCHAR(20) NOT NULL,
   `name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`symbol`),
-  UNIQUE INDEX `symbol_UNIQUE` (`symbol` ASC))
+  PRIMARY KEY (`id`),
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE `financial`.`stock_day` (
+CREATE TABLE `financial`.`stock_simple` (
+  `id` INT NOT NULL AUTO_INCREMENT,
   `symbol` VARCHAR(20) NOT NULL COMMENT '\'股票号\'',
   `name` VARCHAR(45) NOT NULL COMMENT '\'股票名称\'',
   `volume` INT NULL COMMENT '成交量',
@@ -19,12 +20,59 @@ CREATE TABLE `financial`.`stock_day` (
   `turnrate` DOUBLE NULL COMMENT '换手率\n',
   `ma5` DOUBLE NULL COMMENT '5日均价',
   `ma10` DOUBLE NULL COMMENT '5日均价',
-  `ma30` DOUBLE NULL,
-  `dif` DOUBLE NULL,
-  `dea` DOUBLE NULL,
-  `macd` DOUBLE NULL,
+  `ma30` DOUBLE NULL COMMENT '30日均价' ,
+  `dif` DOUBLE NULL COMMENT '短期与长期移动平均线间的离差值' ,
+  `dea` DOUBLE NULL COMMENT '平滑移动平均线' ,
+  `macd` DOUBLE NULL COMMENT '平滑异同移动平均线',
   `time` DATE NULL,
-  PRIMARY KEY (`symbol`))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = '股票天数据';
+
+
+CREATE TABLE `financial`.`stock` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `symbol` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(45) NULL,
+  `exchange` VARCHAR(10) NULL COMMENT '前缀 sz sh',
+  `code` VARCHAR(10) NULL,
+  `currency_unit` VARCHAR(45) NULL,
+  `current` DOUBLE NULL COMMENT '当前价',
+  `percentage` DOUBLE NULL COMMENT '涨跌百分比',
+  `change` DOUBLE NULL COMMENT '涨跌幅',
+  `open` DOUBLE NULL COMMENT '开盘价',
+  `high` DOUBLE NULL COMMENT '最高价',
+  `low` DOUBLE NULL COMMENT '最低价',
+  `close` DOUBLE NULL COMMENT '收盘价',
+  `last_close` DOUBLE NULL COMMENT '昨收',
+  `high52Week` DOUBLE NULL COMMENT '52周最高',
+  `low52week` DOUBLE NULL COMMENT '52周最低',
+  `volume` INT NULL COMMENT '成交量',
+  `volumeAverage` DOUBLE NULL COMMENT '平均成交量',
+  `marketCapital` DOUBLE NULL COMMENT '总市值',
+  `eps` DOUBLE NULL COMMENT '每股收益',
+  `amplitude` DOUBLE NULL COMMENT '振幅',
+  `fall_stop` DOUBLE NULL COMMENT '跌停价',
+  `rise_stop` DOUBLE NULL COMMENT '涨停价',
+  `pe_ttm` DOUBLE NULL COMMENT '动态市盈率',
+  `pe_lyr` DOUBLE NULL COMMENT '静态市盈率',
+  `beta` DOUBLE NULL COMMENT '个别投资工具相对整个市场的波动',
+  `totalShares` DOUBLE NULL COMMENT '总股本',
+  `time` DATE NULL COMMENT '雪球系统时间',
+  `afterHours` DOUBLE NULL,
+  `updateAt` TIMESTAMP NULL,
+  `dividend` DOUBLE NULL COMMENT '每股股息',
+  `float_shares` DOUBLE NULL COMMENT '流通股本',
+  `float_market_capital` DOUBLE NULL COMMENT '流通值',
+  `net_assets` DOUBLE NULL COMMENT '每股净资产',
+  `psr` DOUBLE NULL COMMENT '市销率',
+  `turnover_rate` DOUBLE NULL COMMENT '换手率',
+  `amount` DOUBLE NULL COMMENT '成交额',
+  PRIMARY KEY (`id`))
+  ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8
+COMMENT = '股票当天详细信息';
+
+
+

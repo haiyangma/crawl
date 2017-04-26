@@ -3,8 +3,8 @@ package com.mhy.crawl.data.model;
 /**
  * Created by mhy on 2017/4/18.
  */
-public class HitoStock {
-
+public class StockSimple {
+    private Integer id;
     private String name; //股票名称
     private String symbol; //股票代码
     private String volume;
@@ -22,6 +22,14 @@ public class HitoStock {
     private String dea;
     private String macd;
     private String time;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -161,7 +169,7 @@ public class HitoStock {
 
     @Override
     public String toString() {
-        return "HitoStock{" +
+        return "StockSimple{" +
                 "volume='" + volume + '\'' +
                 ", open='" + open + '\'' +
                 ", high='" + high + '\'' +

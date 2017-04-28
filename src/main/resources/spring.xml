@@ -13,13 +13,9 @@
 
 	<!-- 自动扫描 -->
 	<context:component-scan base-package="com.mhy.*" />
-		<!--<context:exclude-filter type="annotation"-->
-		<!--expression="org.aspectj.lang.annotation.Aspect" />-->
-
 
 	<mvc:resources location="/WEB-INF" mapping="/jamon/**" />
 
-	<!-- 支持上传文件 -->
 	<bean id="multipartResolver"
 		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
 
@@ -38,13 +34,6 @@
 		<property name="properties" ref="configProperties" />
 		<property name="fileEncoding" value="utf-8" />
 	</bean>
-
-	<!--<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">-->
-		<!--<property name="maxIdle" value="${redis.maxIdle}" />-->
-		<!--<property name="maxActive" value="${redis.maxActive}" />-->
-		<!--<property name="maxWait" value="${redis.maxWait}" />-->
-		<!--<property name="testOnBorrow" value="${redis.testOnBorrow}" />-->
-	<!--</bean>-->
 
 	<import resource="spring-mybatis.xml" />
 

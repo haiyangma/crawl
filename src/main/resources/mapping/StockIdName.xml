@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 不写会报错 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mhy.crawl.data.model.Stock">
+<mapper namespace="com.mhy.crawl.dao.StockNameIdDao" >
     <!-- 自定义返回结果集 -->
-    <resultMap id="userMap" type="Stock">
+    <resultMap id="stockIdNameMap" type="com.mhy.crawl.data.model.StockIdName">
         <id property="id" column="id" javaType="java.lang.Integer"></id>
-        <result property="username" column="username" javaType="java.lang.String"></result>
-        <result property="password" column="password" javaType="java.lang.String"></result>
-        <result property="account" column="account" javaType="java.lang.Double"></result>
+        <result property="symbol" column="symbol" javaType="java.lang.String"></result>
+        <result property="name" column="name" javaType="java.lang.String"></result>
+        <result property="code" column="code" javaType="java.lang.String"></result>
     </resultMap>
     <!-- 在各种标签中的id属性必须和接口中的方法名相同 ， id属性值必须是唯一的，不能够重复使用。parameterType属性指明查询时使用的参数类型，
     resultType属性指明查询返回的结果集类型-->
@@ -19,11 +19,24 @@
     <!--#{}中的内容，为占位符，当参数为某个JavaBean时，表示放置该Bean对象的属性值  -->
 
 
-    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
-        insert into t_user (username,password,account) values (#{username},#{password},#{account})
+    <insert id="insert" parameterType="StockIdName">
+        insert into stock_id_name (id,symbol,name,code) values (#{id},#{symbol},#{name},#{code})
     </insert>
 
-    <update id="updateUser" >
+    <insert id="batchInsert" parameterType="List">
+        insert into stock_id_name (id,symbol,name,code)
+        VALUES
+        <foreach collection ="list" item="stockIdName" index= "index" separator =",">
+            (
+            NULL ,
+            #{stockIdName.symbol},
+            #{stockIdName.name},
+            #{stockIdName.code}
+            )
+        </foreach >
+    </insert>
+
+    <!--<update id="updateUser" >
         update t_user set username=#{username},password=#{password},account=#{account} where id=#{id}
     </update>
 
@@ -37,5 +50,5 @@
 
     <select id="selectAllUser" resultMap="userMap">
         select * from t_user
-    </select>
+    </select>-->
 </mapper>

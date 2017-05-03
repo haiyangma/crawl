@@ -1,5 +1,8 @@
 package com.mhy.crawl.data.model;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by mhy on 2017/4/18.
  */
@@ -21,7 +24,9 @@ public class StockSimple {
     private String dif;
     private String dea;
     private String macd;
-    private String time;
+    private Date time;
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
 
     public Integer getId() {
         return id;
@@ -159,12 +164,12 @@ public class StockSimple {
         this.macd = macd;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
     public void setTime(String time) {
-        this.time = time;
+        this.time = new Date(time);
     }
 
     @Override

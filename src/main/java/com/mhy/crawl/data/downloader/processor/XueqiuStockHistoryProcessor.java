@@ -2,10 +2,17 @@ package com.mhy.crawl.data.downloader.processor;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mhy.crawl.dao.StockNameIdDao;
+import com.mhy.crawl.dao.StockSimpleDao;
 import com.mhy.crawl.data.downloader.http.CookieRepo;
+import com.mhy.crawl.data.model.StockIdName;
 import com.mhy.crawl.data.model.StockSimple;
+import com.mhy.crawl.util.ApplicationContextUtil;
 import com.mhy.crawl.util.CookieProcessor;
+import com.mhy.crawl.cache.StockIdNameCache;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Request;
 import us.codecraft.webmagic.Site;
@@ -23,6 +30,15 @@ import java.util.regex.Pattern;
  */
 public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> {
 
+
+    @Autowired
+    StockSimpleDao stockSimpleDao = ApplicationContextUtil.getContext().getBean(StockSimpleDao.class);
+
+    @Autowired
+    StockNameIdDao stockNameIdDao = ApplicationContextUtil.getContext().getBean(StockNameIdDao.class);
+
+    StockIdNameCache stockIdNameCache = ApplicationContextUtil.getContext().getBean(StockIdNameCache.class);
+
     private Site site = new Site().setRetryTimes(1).setDomain("xueqiu.com").setSleepTime(200);
 
 
@@ -37,8 +53,9 @@ public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> 
         site.addHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
         site.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36");
         if(CookieRepo.getCookies(site.getDomain())!=null){
-            for(Pair<String,String> pair : CookieRepo.getCookies(site.getDomain()))
-            site.addCookie(pair.getKey(),pair.getValue());
+            for(Pair<String,String> pair : CookieRepo.getCookies(site.getDomain())){
+                site.addCookie(pair.getKey(),pair.getValue());
+            }
         }
         return site;
     }
@@ -90,6 +107,11 @@ public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> 
     public List<StockSimple> transToObj(JSONObject json) {
         List<StockSimple> toReturn = null;
         if(json.containsKey("chartlist")){
+            JSONObject stock = json.getJSONObject("stock");
+            final String symbol = stock.getString("symbol");
+            if(StringUtils.isBlank(symbol)){
+                return new ArrayList<StockSimple>();
+            }
             JSONArray arr = json.getJSONArray("chartlist");
             if(arr.size()>0){
                 for(Object jobj : arr){
@@ -97,6 +119,14 @@ public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> 
                     if(toReturn==null){
                         toReturn = new ArrayList<StockSimple>();
                     }
+                    stockSimple.setSymbol(symbol);
+                    StockIdName stockIdName = null ;
+                    stockIdName = stockIdNameCache.getStockIdName(symbol);
+                    if(stockIdName == null){
+                        LOGGER.error("can not get the stockIdName {} \n{}",symbol,json);
+                        return new ArrayList<StockSimple>();
+                    }
+                    stockSimple.setName(stockIdName.getName());
                     toReturn.add(stockSimple);
                 }
             }
@@ -104,9 +134,20 @@ public class XueqiuStockHistoryProcessor extends JsonDataProcessor<StockSimple> 
         return toReturn;
     }
 
-    public void doWithObj(StockSimple stock) {
-//        System.out.println(stock);
-        LOGGER.info(" ",stock,2);
+    private List<StockSimple> toSave =null;
+    public void doWithObj(List<StockSimple> stockSimples) {
+        int i = 0;
+        int length = stockSimples.size();
+        List<StockSimple> toSave = null;
+        for(;i<length;i+=100){
+            if(i+100>=length){
+                toSave = stockSimples.subList(i,length);
+                stockSimpleDao.batchInsert(toSave);
+                break;
+            }
+            toSave = stockSimples.subList(i,i+100);
+            stockSimpleDao.batchInsert(toSave);
+        }
     }
 
     public static void main(String[] args) {

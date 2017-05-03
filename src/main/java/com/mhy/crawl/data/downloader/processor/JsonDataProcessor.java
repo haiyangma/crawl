@@ -35,9 +35,7 @@ public abstract class JsonDataProcessor<T> implements PageProcessor {
             if(list==null||list.size()==0){
                 return;
             }
-            for(T obj: list){
-                doWithObj(obj);
-            }
+            doWithObj(list);
         }
     }
 
@@ -45,5 +43,5 @@ public abstract class JsonDataProcessor<T> implements PageProcessor {
 
     public abstract Site getSite();
 
-    public abstract void doWithObj(T t);
+    public abstract void doWithObj(List<T> t);
 }

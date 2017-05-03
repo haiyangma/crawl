@@ -63,8 +63,8 @@ public class XueqiuStockProcessor extends JsonDataProcessor<Stock> {
         return ret;
     }
 
-    public void doWithObj(Stock stock) {
-        LOGGER.info("{}",stock);
+    public void doWithObj(List<Stock> stocks) {
+        LOGGER.info("{}",stocks);
 //        System.out.println(stock);
     }
 

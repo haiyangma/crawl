@@ -1,28 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 不写会报错 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mhy.crawl.dao.StockSimpleDao">
+<mapper namespace="com.mhy.crawl.dao.StockDao">
 
     <!-- 自定义返回结果集 -->
-    <resultMap id="stockSimpleMap" type="com.mhy.crawl.data.model.StockSimple">
+    <resultMap id="stockMap" type="com.mhy.crawl.data.model.Stock">
         <id property="id" column="id" javaType="java.lang.Integer"></id>
         <result property="symbol" column="symbol" javaType="java.lang.String"></result>
         <result property="name" column="name" javaType="java.lang.String"></result>
         <result property="volume" column="volume" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="code" column="code" javaType="java.lang.String" jdbcType="VARCHAR"></result>
+        <result property="currency_unit" column="currency_unit" javaType="java.lang.String" jdbcType="VARCHAR"></result>
+        <result property="current" column="current" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="percentage" column="percentage" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="change" column="change" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="open" column="open" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="high" column="high" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="close" column="close" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="low" column="low" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="chg" column="chg" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="percent" column="percent" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="turnrate" column="turnrate" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="ma5" column="ma5" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="ma10" column="ma10" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="ma30" column="ma30" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="dif" column="dif" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="dea" column="dea" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="macd" column="macd" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="last_close" column="last_close" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="high52Week" column="high52Week" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="low52week" column="low52week" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="volumeAverage" column="volumeAverage" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="marketCapital" column="marketCapital" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="eps" column="eps" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="amplitude" column="amplitude" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="fall_stop" column="fall_stop" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="rise_stop" column="rise_stop" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="pe_ttm" column="pe_ttm" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="pe_lyr" column="pe_lyr" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="beta" column="beta" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="time" column="time" javaType="java.lang.String" jdbcType="DATE"></result>
+        <result property="updateAt" column="updateAt" javaType="java.lang.String" jdbcType="TIMESTAMP"></result>
+        <result property="totalShares" column="totalShares" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="afterHours" column="afterHours" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="dividend" column="dividend" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="float_shares" column="float_shares" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="float_market_capital" column="float_market_capital" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="net_assets" column="net_assets" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="psr" column="psr" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="turnover_rate" column="turnover_rate" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="amount" column="amount" javaType="java.lang.String" jdbcType="DOUBLE"></result>
     </resultMap>
     <!-- 在各种标签中的id属性必须和接口中的方法名相同 ， id属性值必须是唯一的，不能够重复使用。parameterType属性指明查询时使用的参数类型，
     resultType属性指明查询返回的结果集类型-->
@@ -34,84 +52,165 @@
     <!--#{}中的内容，为占位符，当参数为某个JavaBean时，表示放置该Bean对象的属性值  -->
 
 
-    <insert id="insert" parameterType="StockIdName">
-        insert into stock_simple (
+    <insert id="insert" parameterType="Stock">
+        insert into stock (
         id,
-        symbol,
         name,
-        open,
-        high,
-        close,
-        low,
-        chg,
-        percent,
-        turnrate,
-        ma5,
-        ma10,
-        ma30,
-        dif,
-        dea,
-        macd,
-        time
+        symbol,
+        exchange,
+        code,
+        currency_unit ,
+        current ,
+        percentage ,
+        change,
+        open ,
+        high ,
+        low ,
+        close ,
+        last_close ,
+        high52Week ,
+        low52week,
+        volume,
+        volumeAverage,
+        marketCapital ,
+        eps ,
+        amplitude ,
+        fall_stop ,
+        rise_stop,
+        pe_ttm ,
+        pe_lyr,
+        beta,
+        totalShares ,
+        time,
+        afterHours,
+        updateAt,
+        dividend ,
+        float_shares,
+        float_market_capital,
+        net_assets,
+        psr ,
+        turnover_rate ,
+        amount
         ) values (
         NULL,
-        #{symbol ,jdbcType= DOUBLE },
-        #{name ,jdbcType= DOUBLE },
-        #{open ,jdbcType= DOUBLE },
+        #{name ,jdbcType= VARCHAR },
+        #{symbol,jdbcType= VARCHAR },
+        #{exchange,jdbcType= VARCHAR },
+        #{code,jdbcType= VARCHAR },
+        #{currency_unit,jdbcType= VARCHAR },
+        #{current,jdbcType= DOUBLE },
+        #{percentage,jdbcType= DOUBLE },
+        #{change,jdbcType= DOUBLE },
+        #{open,jdbcType= DOUBLE },
         #{high ,jdbcType= DOUBLE },
+        #{low,jdbcType= DOUBLE },
         #{close ,jdbcType= DOUBLE },
-        #{low ,jdbcType= DOUBLE },
-        #{chg ,jdbcType= DOUBLE },
-        #{percent ,jdbcType= DOUBLE },
-        #{turnrate ,jdbcType= DOUBLE },
-        #{ma5 ,jdbcType= DOUBLE },
-        #{ma10 ,jdbcType= DOUBLE },
-        #{ma30 ,jdbcType= DOUBLE },
-        #{dif ,jdbcType= DOUBLE },
-        #{dea ,jdbcType= DOUBLE },
-        #{macd ,jdbcType= DOUBLE },
-        #{time ,jdbcType= DATE }
+        #{last_close ,jdbcType= DOUBLE },
+        #{high52Week,jdbcType= DOUBLE },
+        #{low52week,jdbcType= DOUBLE },
+        #{volume,jdbcType= DOUBLE },
+        #{volumeAverage,jdbcType= DOUBLE },
+        #{marketCapital ,jdbcType= DOUBLE },
+        #{eps,jdbcType= DOUBLE },
+        #{amplitude ,jdbcType= DOUBLE },
+        #{fall_stop ,jdbcType= DOUBLE },
+        #{rise_stop,jdbcType= DOUBLE },
+        #{pe_ttm ,jdbcType= DOUBLE },
+        #{pe_lyr,jdbcType= DOUBLE },
+        #{beta,jdbcType= DOUBLE },
+        #{totalShares ,jdbcType= DOUBLE },
+        #{time,jdbcType= DATE },
+        #{afterHours,jdbcType= DOUBLE },
+        #{updateAt,jdbcType= TIMESTAMP },
+        #{dividend ,jdbcType= DOUBLE },
+        #{float_shares,jdbcType= DOUBLE },
+        #{float_market_capital,jdbcType= DOUBLE },
+        #{net_assets,jdbcType= DOUBLE },
+        #{psr ,jdbcType= DOUBLE },
+        #{turnover_rate ,jdbcType= DOUBLE },
+        #{amount,jdbcType= DOUBLE }
         )
     </insert>
 
     <insert id="batchInsert" parameterType="List">
-        insert into stock_simple (
+        insert into stock (
         id,
-        symbol,
         name,
-        open,
-        high,
-        close,
-        low,
-        chg,
-        percent,
-        turnrate,
-        ma5,
-        ma10,
-        ma30,
-        dif,
-        dea,
-        macd,
-        time)
-        VALUES
-        <foreach collection ="list" item="stockSimple" index= "index" separator =",">
+        symbol,
+        exchange,
+        code,
+        currency_unit ,
+        current ,
+        percentage ,
+        change,
+        open ,
+        high ,
+        low ,
+        close ,
+        last_close ,
+        high52Week ,
+        low52week,
+        volume,
+        volumeAverage,
+        marketCapital ,
+        eps ,
+        amplitude ,
+        fall_stop ,
+        rise_stop,
+        pe_ttm ,
+        pe_lyr,
+        beta,
+        totalShares ,
+        time,
+        afterHours,
+        updateAt,
+        dividend ,
+        float_shares,
+        float_market_capital,
+        net_assets,
+        psr ,
+        turnover_rate ,
+        amount
+        )VALUES
+        <foreach collection ="list" item="stock" index= "index" separator =",">
             (
-            #{stockSimple.symbol ,jdbcType= DOUBLE },
-            #{stockSimple.name ,jdbcType= DOUBLE },
-            #{stockSimple.open ,jdbcType= DOUBLE },
-            #{stockSimple.high ,jdbcType= DOUBLE },
-            #{stockSimple.close ,jdbcType= DOUBLE },
-            #{stockSimple.low ,jdbcType= DOUBLE },
-            #{stockSimple.chg ,jdbcType= DOUBLE },
-            #{stockSimple.percent ,jdbcType= DOUBLE },
-            #{stockSimple.turnrate ,jdbcType= DOUBLE },
-            #{stockSimple.ma5 ,jdbcType= DOUBLE },
-            #{stockSimple.ma10 ,jdbcType= DOUBLE },
-            #{stockSimple.ma30 ,jdbcType= DOUBLE },
-            #{stockSimple.dif ,jdbcType= DOUBLE },
-            #{stockSimple.dea ,jdbcType= DOUBLE },
-            #{stockSimple.macd ,jdbcType= DOUBLE },
-            #{stockSimple.time ,jdbcType= DATE }
+            NULL,
+            #{stock.name,jdbcType= VARCHAR },
+            #{stock.symbol,jdbcType= VARCHAR },
+            #{stock.exchange,jdbcType= VARCHAR },
+            #{stock.code,jdbcType= VARCHAR },
+            #{stock.currency_unit ,jdbcType= VARCHAR },
+            #{stock.current ,jdbcType= DOUBLE },
+            #{stock.percentage ,jdbcType= DOUBLE },
+            #{stock.change,jdbcType= DOUBLE },
+            #{stock.open ,jdbcType= DOUBLE },
+            #{stock.high ,jdbcType= DOUBLE },
+            #{stock.low ,jdbcType= DOUBLE },
+            #{stock.close ,jdbcType= DOUBLE },
+            #{stock.last_close ,jdbcType= DOUBLE },
+            #{stock.high52Week ,jdbcType= DOUBLE },
+            #{stock.low52week,jdbcType= DOUBLE },
+            #{stock.volume,jdbcType= DOUBLE },
+            #{stock.volumeAverage,jdbcType= DOUBLE },
+            #{stock.marketCapital ,jdbcType= DOUBLE },
+            #{stock.eps ,jdbcType= DOUBLE },
+            #{stock.amplitude ,jdbcType= DOUBLE },
+            #{stock.fall_stop ,jdbcType= DOUBLE },
+            #{stock.rise_stop,jdbcType= DOUBLE },
+            #{stock.pe_ttm ,jdbcType= DOUBLE },
+            #{stock.pe_lyr,jdbcType= DOUBLE },
+            #{stock.beta,jdbcType= DOUBLE },
+            #{stock.totalShares ,jdbcType= DOUBLE },
+            #{stock.time,jdbcType= DATE },
+            #{stock.afterHours,jdbcType= DOUBLE },
+            #{stock.updateAt,jdbcType= TIMESTAMP },
+            #{stock.dividend ,jdbcType= DOUBLE },
+            #{stock.float_shares,jdbcType= DOUBLE },
+            #{stock.float_market_capital,jdbcType= DOUBLE },
+            #{stock.net_assets,jdbcType= DOUBLE },
+            #{stock.psr ,jdbcType= DOUBLE },
+            #{stock.turnover_rate ,jdbcType= DOUBLE },
+            #{stock.amount,jdbcType= DOUBLE }
             )
         </foreach >
     </insert>

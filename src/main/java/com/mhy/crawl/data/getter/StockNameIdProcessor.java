@@ -24,9 +24,8 @@ public class StockNameIdProcessor implements PageProcessor {
 
     private Site site = Site.me().setRetryTimes(3).setSleepTime(0);
     private PageMapper<StockIdName> githubRepoPageMapper = new PageMapper<StockIdName>(StockIdName.class);
-    ApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
     @Autowired
-    StockNameIdDao stockNameIdDao = ctx.getBean(StockNameIdDao.class);
+    StockNameIdDao stockNameIdDao;
 
     public void process(Page page) {
         List<StockIdName> list = githubRepoPageMapper.getAll(page);

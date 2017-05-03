@@ -7,7 +7,7 @@
         <id property="id" column="id" javaType="java.lang.Integer"></id>
         <result property="symbol" column="symbol" javaType="java.lang.String"></result>
         <result property="name" column="name" javaType="java.lang.String"></result>
-        <result property="code" column="code" javaType="java.lang.String"></result>
+        <result property="code" column="code" javaType="java.lang.Integer"></result>
     </resultMap>
     <!-- 在各种标签中的id属性必须和接口中的方法名相同 ， id属性值必须是唯一的，不能够重复使用。parameterType属性指明查询时使用的参数类型，
     resultType属性指明查询返回的结果集类型-->
@@ -35,6 +35,14 @@
             )
         </foreach >
     </insert>
+
+    <select id="getAll"  resultMap="stockIdNameMap">
+        select * from stock_id_name;
+    </select>
+
+    <select id="getStockIdName"  resultMap="stockIdNameMap">
+        select * from stock_id_name where symbol=#{symbol};
+    </select>
 
     <!--<update id="updateUser" >
         update t_user set username=#{username},password=#{password},account=#{account} where id=#{id}

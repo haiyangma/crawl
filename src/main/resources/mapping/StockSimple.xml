@@ -8,7 +8,7 @@
         <id property="id" column="id" javaType="java.lang.Integer"></id>
         <result property="symbol" column="symbol" javaType="java.lang.String"></result>
         <result property="name" column="name" javaType="java.lang.String"></result>
-        <result property="volume" column="volume" javaType="java.lang.String" jdbcType="DOUBLE"></result>
+        <result property="volume" column="volume" javaType="java.lang.String" jdbcType="INTEGER"></result>
         <result property="open" column="open" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="high" column="high" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="close" column="close" javaType="java.lang.String" jdbcType="DOUBLE"></result>
@@ -22,7 +22,7 @@
         <result property="dif" column="dif" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="dea" column="dea" javaType="java.lang.String" jdbcType="DOUBLE"></result>
         <result property="macd" column="macd" javaType="java.lang.String" jdbcType="DOUBLE"></result>
-        <result property="time" column="time" javaType="java.lang.String" jdbcType="DATE"></result>
+        <result property="time" column="time" javaType="java.util.Date" jdbcType="DATE"></result>
     </resultMap>
     <!-- 在各种标签中的id属性必须和接口中的方法名相同 ， id属性值必须是唯一的，不能够重复使用。parameterType属性指明查询时使用的参数类型，
     resultType属性指明查询返回的结果集类型-->
@@ -38,10 +38,11 @@
         insert into stock_simple (
         id,
         symbol,
-        name,
-        open,
+        `name`,
+        volume,
+        `open`,
         high,
-        close,
+        `close`,
         low,
         chg,
         percent,
@@ -52,11 +53,12 @@
         dif,
         dea,
         macd,
-        time
+        `time`
         ) values (
         NULL,
-        #{symbol ,jdbcType= DOUBLE },
-        #{name ,jdbcType= DOUBLE },
+        #{symbol ,jdbcType= VARCHAR },
+        #{name ,jdbcType= VARCHAR },
+         #{volume ,jdbcType= INTEGER },
         #{open ,jdbcType= DOUBLE },
         #{high ,jdbcType= DOUBLE },
         #{close ,jdbcType= DOUBLE },
@@ -78,10 +80,11 @@
         insert into stock_simple (
         id,
         symbol,
-        name,
-        open,
+        `name`,
+        volume,
+        `open`,
         high,
-        close,
+        `close`,
         low,
         chg,
         percent,
@@ -92,12 +95,14 @@
         dif,
         dea,
         macd,
-        time)
+        `time`)
         VALUES
         <foreach collection ="list" item="stockSimple" index= "index" separator =",">
             (
-            #{stockSimple.symbol ,jdbcType= DOUBLE },
-            #{stockSimple.name ,jdbcType= DOUBLE },
+            NULL,
+            #{stockSimple.symbol ,jdbcType= VARCHAR },
+            #{stockSimple.name ,jdbcType= VARCHAR },
+            #{stockSimple.volume ,jdbcType= INTEGER },
             #{stockSimple.open ,jdbcType= DOUBLE },
             #{stockSimple.high ,jdbcType= DOUBLE },
             #{stockSimple.close ,jdbcType= DOUBLE },

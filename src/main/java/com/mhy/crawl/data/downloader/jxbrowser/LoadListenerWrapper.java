@@ -26,7 +26,7 @@ public abstract class LoadListenerWrapper extends LoadAdapter {
 
     private BrowserWrapper browserWrapper;
 
-    public AtomicBoolean isOk = new AtomicBoolean(false);
+    public AtomicBoolean isOk = null;
 
     public LoadListenerWrapper(Page page) {
         this.page = page;
@@ -45,14 +45,23 @@ public abstract class LoadListenerWrapper extends LoadAdapter {
     @Override
     public void onFinishLoadingFrame(FinishLoadingEvent event) {
         super.onFinishLoadingFrame(event);
-        process(page,event);
-        browserWrapper.getBrowserPool().returnOne(browserWrapper);
-        isOk.set(true);
+        if(event.isMainFrame()){
+            if(isOk == null){
+                isOk = new AtomicBoolean();
+            }
+            process(page,event);
+            browserWrapper.getBrowserPool().returnOne(browserWrapper);
+            isOk.set(true);
+        }
     }
 
     @Override
     public void onFailLoadingFrame(FailLoadingEvent event) {
         if(event.isMainFrame()){
+            if(isOk == null){
+                isOk = new AtomicBoolean();
+            }
+            browserWrapper.getBrowserPool().returnOne(browserWrapper);
             logger.warn("failed to load the url ...");
             page = null;
             isOk.set(false);

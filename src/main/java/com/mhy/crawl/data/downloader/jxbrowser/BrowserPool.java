@@ -54,9 +54,9 @@ class BrowserPool implements Closeable{
 
 
 	public void close() throws IOException {
-		for(BrowserWrapper browserWrapper : quene){
+		while(!quene.isEmpty()){
+			BrowserWrapper browserWrapper = quene.poll();
 			browserWrapper.dispose();
 		}
-		System.exit(0);
 	}
 }

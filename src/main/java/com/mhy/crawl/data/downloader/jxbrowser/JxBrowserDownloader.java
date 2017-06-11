@@ -12,6 +12,8 @@ import us.codecraft.webmagic.selector.Html;
 import us.codecraft.webmagic.selector.PlainText;
 import us.codecraft.webmagic.utils.UrlUtils;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * Created by mhy on 2017/4/11.
  */
-public class JxBrowserDownloader extends AbstractDownloader {
+public class JxBrowserDownloader extends AbstractDownloader implements Closeable {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private BrowserPool browserPool;
@@ -77,8 +79,6 @@ public class JxBrowserDownloader extends AbstractDownloader {
         }
         if(loadListener.isOk.get()){
             page.setRawText(browserWrapper.getHTML());
-            page.setHtml(new Html(UrlUtils.fixAllRelativeHrefs(browserWrapper.getHTML(),
-                    request.getUrl())));
         }
         return page;
 
@@ -86,5 +86,9 @@ public class JxBrowserDownloader extends AbstractDownloader {
 
     public void setThread(int i) {
         this.poolSize = i;
+    }
+
+    public void close() throws IOException {
+        this.browserPool.close();
     }
 }

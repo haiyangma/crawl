@@ -66,10 +66,10 @@ public class JxBrowserDownloader extends AbstractDownloader implements Closeable
         browserWrapper.loadURL(request.getUrl());
         int i =0;
         for(;i<100;i++){
-            if(page == null||loadListener.isOk.get()){
+            if(loadListener.isOk!=null){
                 break;
             }
-            if(page!=null&&!loadListener.isOk.get()){
+            if(loadListener.isOk == null){
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

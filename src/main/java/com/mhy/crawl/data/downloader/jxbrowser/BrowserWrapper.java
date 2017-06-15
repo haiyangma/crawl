@@ -44,7 +44,6 @@ public  class BrowserWrapper extends Browser{
     }
 
     public void addLoadListener(LoadListenerWrapper loadAdapter) {
-        this.loadURL("");
         loadAdapter.setBrowserWrapper(this);
         super.addLoadListener(loadAdapter);
     }

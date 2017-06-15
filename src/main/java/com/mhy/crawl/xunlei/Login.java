@@ -1,10 +1,19 @@
 package com.mhy.crawl.xunlei;
 
+import com.mhy.crawl.data.downloader.jxbrowser.BrowserWrapper;
 import com.mhy.crawl.data.downloader.jxbrowser.JxBrowserDownloader;
 import com.mhy.crawl.data.downloader.jxbrowser.LoadListenerWrapper;
 import com.mhy.crawl.data.downloader.processor.XueqiuStockHistoryProcessor;
 import com.mhy.crawl.data.model.StockSimple;
-import com.teamdev.jxbrowser.chromium.events.FinishLoadingEvent;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserKeyEvent;
+import com.teamdev.jxbrowser.chromium.Cookie;
+import com.teamdev.jxbrowser.chromium.LoadURLParams;
+import com.teamdev.jxbrowser.chromium.dom.By;
+import com.teamdev.jxbrowser.chromium.dom.DOMElement;
+import com.teamdev.jxbrowser.chromium.dom.internal.Document;
+import com.teamdev.jxbrowser.chromium.dom.internal.Element;
+import com.teamdev.jxbrowser.chromium.events.*;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -67,9 +76,9 @@ public class Login {
             e.printStackTrace();
         }
         request.setRequestBody(httpRequestBody);
-        Spider spider = Spider.create(new PageProcessor() {
+        final Spider spider = Spider.create(new PageProcessor() {
             public void process(Page page) {
-                System.out.print(page);
+//                System.out.print(page);
             }
 
             public Site getSite() {
@@ -82,7 +91,43 @@ public class Login {
 
             public void process(Page page, FinishLoadingEvent event) {
                 if(event.isMainFrame()){
-                    System.out.print(event.getBrowser().getCookieStorage());;
+                    final Browser browser = event.getBrowser();
+                    browser.addScriptContextListener(new ScriptContextAdapter() {
+                        @Override
+                        public void onScriptContextCreated(ScriptContextEvent event) {
+                            System.out.println(event.getJSContext());
+                            super.onScriptContextCreated(event);
+                        }
+
+                        @Override
+                        public void onScriptContextDestroyed(ScriptContextEvent event) {
+//                            System.out.println(event.getJSContext());
+//                            super.onScriptContextDestroyed(event);
+                            System.out.println(123);
+                        }
+                    });
+
+                    for(Long frameId : browser.getFramesIds()){
+                        DOMElement userId = browser.getDocument(frameId).findElement(By.id("al_u"));
+                        if(userId!=null){
+                            userId.setInnerText("18613828660");
+                            DOMElement passwd = browser.getDocument(frameId).findElement(By.id("al_p"));
+                            DOMElement submit = browser.getDocument(frameId).findElement(By.id("al_submit"));
+                            passwd.setInnerText("2015mhyxcy");
+//                            browser.addScriptContextListener();
+                            submit.click();
+                            try {
+                                Thread.sleep(10000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("sleep");
+                        }
+                    }
+//                    browser.getDocument().findElement(By.id("al_u")).setInnerHTML("18613828660");
+//                    browser.getDocument().findElement(By.id("al_p")).setInnerHTML("2015mhyxcy");
+//                    browser.getDocument().findElement(By.id("al_u")).getInnerHTML();
+//                    browser.getDocument().findElement(By.id("al_p")).getInnerHTML();
                 }
             }
         };
@@ -92,7 +137,19 @@ public class Login {
 //        spider.addRequest(request);
         Request loginPage = new Request("http://lixian.xunlei.com/login.html");
         spider.addRequest(loginPage);
-        spider.setExitWhenComplete(false);
+//        spider.setExitWhenComplete(false);
         spider.start();
+    }
+
+    public static LoadURLParams getParams(){
+        LoadURLParams param = new LoadURLParams("https://login.xunlei.com/sec2login/?csrf_token=89672b3d55ac896f2a2115faae962d8f"
+        ,"p=2015mhyxcy&u=18613828660&verifycode=&login_enable=0&business_type=108&v=101&cachetime="+System.currentTimeMillis()
+                ,"Content-Type: application/x-www-form-urlencoded\n" +
+                "Cookie:verify_type=MVA; deviceid=wdi10.53077b37886d2ef3c466654b7dbd7b27160624d1b5855fe95fc7c6dadd7fcf39; VERIFY_KEY=0873067F8B2CB5338095A0C29BC29F50E186C4AF37EEFE616E21BDE0B0FCE056\n" +
+                "Host:login3.xunlei.com\n" +
+                "Origin:http://i.xunlei.com\n" +
+                "Pragma:no-cache\n" +
+                "Referer:http://i.xunlei.com/login/?r_d=1&use_cdn=0&timestamp=1497515861365&refurl=http%3A%2F%2Flixian.xunlei.com%2Flogin.html");
+        return param;
     }
 }

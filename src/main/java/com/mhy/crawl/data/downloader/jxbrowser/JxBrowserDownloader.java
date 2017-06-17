@@ -1,6 +1,8 @@
 package com.mhy.crawl.data.downloader.jxbrowser;
 
 import com.mhy.crawl.util.RegexUtil;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import us.codecraft.webmagic.Page;
@@ -33,16 +35,8 @@ public class JxBrowserDownloader extends AbstractDownloader implements Closeable
         this.loadListener = loadListener;
     }
 
-    public Page download(Request request, Task task) {
-        BrowserWrapper browserWrapper;
-        browserWrapper = browserPool.borrowOne();
-        while(browserWrapper == null){
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public Page download(final Request request, Task task) {
+        final BrowserWrapper browserWrapper = browserPool.borrowOne();
         Site site = task.getSite();
         String url = request.getUrl();
         String domain = RegexUtil.getparamByRegex(url,"(?<=//|)((\\w)+\\.)+\\w+");
@@ -63,20 +57,12 @@ public class JxBrowserDownloader extends AbstractDownloader implements Closeable
         page.setRequest(request);
         logger.info("downloading page " + request.getUrl());
         browserWrapper.addLoadListener(loadListener);
-        browserWrapper.loadURL(request.getUrl());
         int i =0;
-        for(;i<100;i++){
-            if(loadListener.isOk!=null){
-                break;
+        Browser.invokeAndWaitFinishLoadingMainFrame(browserWrapper, new Callback<Browser>() {
+            public void invoke(Browser browser) {
+                browserWrapper.loadURL(request.getUrl());
             }
-            if(loadListener.isOk == null){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        });
         if(loadListener.isOk.get()){
             page.setRawText(browserWrapper.getHTML());
         }
